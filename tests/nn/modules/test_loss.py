@@ -155,6 +155,12 @@ class TestEntropicRiskMeasure:
         assert_close(result1 + 500, result2)
         assert_close(result1 + 1000, result3)
 
+    @pytest.mark.gpu
+    @pytest.mark.parametrize("n_paths", [10, 100])
+    @pytest.mark.parametrize("a", [1.0, 2.0, 3.0])
+    def test_value_gpu(self, n_paths, a):
+        self.test_value(n_paths, a, device="cuda")
+
     def test_error_a(self):
         with pytest.raises(ValueError):
             EntropicRiskMeasure(0)
@@ -353,7 +359,7 @@ class TestIsoelasticLoss:
 
         loss = IsoelasticLoss(1.0).to(device)
         assert_loss_shape(loss, device=device)
-
+        
     @pytest.mark.gpu
     def test_shape_gpu(self):
         self.test_shape(device="cuda")
